@@ -30,7 +30,7 @@ open index.html
 
 ## Credits
 
-Inspired by the original `bdgt.sh` shell script.
+Inspired by the original [`bdgt.sh`](https://github.com/aneuhaus/budget-salary) shell script.
 
 ## License
 
