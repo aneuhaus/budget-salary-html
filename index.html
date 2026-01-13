@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget & Salary Calculator</title>
+    <meta name="description" content="Calculate your required gross salary based on expenses, tax rates, and real-time exchange rates.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --accent: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #6366f1, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .budget-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .budget-item {
+            display: grid;
+            grid-template-columns: 1fr 120px 40px;
+            gap: 0.75rem;
+            align-items: center;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            border: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            padding: 0.5rem;
+        }
+
+        .btn-ghost:hover {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .add-item-btn {
+            margin-top: 1.5rem;
+            width: 100%;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border: 1px dashed var(--primary);
+        }
+
+        .add-item-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .results {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .result-card.success {
+            border-left-color: var(--accent);
+        }
+
+        .result-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+        }
+
+        .exchange-info {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bridge</h1>
+            <p class="subtitle">Budget & Salary Calculator</p>
+        </header>
+
+        <main class="grid">
+            <!-- Left: Inputs -->
+            <div class="card">
+                <h2>Configuration</h2>
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="currency">Base Currency</label>
+                        <select id="currency">
+                            <option value="BRL">BRL</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="ARS">ARS</option>
+                            <option value="CLP">CLP</option>
+                            <option value="MXN">MXN</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="taxRate">Tax Rate (%)</label>
+                        <input type="number" id="taxRate" step="0.1" value="27.5">
+                    </div>
+                </div>
+
+                <h2>Expenses</h2>
+                <div id="budgetList" class="budget-list">
+                    <!-- Items will be injected here -->
+                </div>
+                <button id="addItem" class="btn add-item-btn">
+                    <span>+</span> Add Expense
+                </button>
+            </div>
+
+            <!-- Right: Results -->
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h2>Summary</h2>
+                    <div class="results">
+                        <div class="result-card">
+                            <div class="result-label">Total Monthly Expenses</div>
+                            <div id="totalBudget" class="result-value">0.00</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Required Gross Salary (<span class="curr-label">BRL</span>)</div>
+                            <div id="grossSalaryBase" class="result-value">0.00</div>
+                        </div>
+                        <div class="result-card success">
+                            <div class="result-label">Required Gross Salary (USD)</div>
+                            <div id="grossSalaryUSD" class="result-value">$ 0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exchange-info">
+                    <p id="exchangeStatus">Fetching latest exchange rates...</p>
+                    <p id="lastUpdated"></p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const DEFAULT_DATA = {
+            currency: 'BRL',
+            taxRate: 27.5,
+            budget: [
+                { name: 'Rent', value: 3700 },
+                { name: 'Condo FLN', value: 1450 },
+                { name: 'Condo PEL', value: 800 },
+                { name: 'Food', value: 1000 },
+                { name: 'Power FLN', value: 120 },
+                { name: 'Power PEL', value: 50 },
+                { name: 'Internet PEL', value: 90 },
+                { name: 'Internet FLN', value: 150 },
+                { name: 'Cell Phone', value: 50 },
+                { name: 'Google Workspace', value: 100 },
+                { name: 'Nebula', value: 30 },
+                { name: 'Pharmacy', value: 300 },
+                { name: 'Health Insurance', value: 600 },
+                { name: 'Car Insurance', value: 200 },
+                { name: 'Transportation', value: 150 },
+                { name: 'Leisure', value: 800 },
+                { name: 'Subscriptions', value: 150 },
+                { name: 'Gym', value: 400 },
+                { name: 'Clothes', value: 200 },
+                { name: 'Emergency Fund', value: 500 },
+                { name: 'Desired Savings', value: 4000 }
+            ]
+        };
+
+        let state = JSON.parse(localStorage.getItem('budget_state')) || DEFAULT_DATA;
+        let exchangeRate = 0.18; // Fallback
+
+        const budgetListEl = document.getElementById('budgetList');
+        const currencyEl = document.getElementById('currency');
+        const taxRateEl = document.getElementById('taxRate');
+        const totalBudgetEl = document.getElementById('totalBudget');
+        const grossSalaryBaseEl = document.getElementById('grossSalaryBase');
+        const grossSalaryUSDEl = document.getElementById('grossSalaryUSD');
+        const exchangeStatusEl = document.getElementById('exchangeStatus');
+        const currLabels = document.querySelectorAll('.curr-label');
+
+        function saveState() {
+            localStorage.setItem('budget_state', JSON.stringify(state));
+        }
+
+        async function fetchExchangeRate() {
+            try {
+                exchangeStatusEl.textContent = `Fetching rate for ${state.currency}...`;
+                const res = await fetch(`https://api.exchangerate-api.com/v4/latest/${state.currency}`);
+                const data = await res.json();
+                exchangeRate = data.rates.USD;
+                exchangeStatusEl.textContent = `1 ${state.currency} = ${exchangeRate.toFixed(4)} USD`;
+                calculate();
+            } catch (err) {
+                console.error('Exchange rate fetch failed', err);
+                exchangeStatusEl.textContent = 'Using fallback exchange rate (0.18)';
+            }
+        }
+
+        function createItemEl(item, index) {
+            const div = document.createElement('div');
+            div.className = 'budget-item';
+            div.innerHTML = `
+                <input type="text" value="${item.name}" placeholder="Expense name" onchange="updateItem(${index}, 'name', this.value)">
+                <input type="number" value="${item.value}" placeholder="0" onchange="updateItem(${index}, 'value', this.value)">
+                <button class="btn btn-ghost" onclick="removeItem(${index})">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+                </button>
+            `;
+            return div;
+        }
+
+        function renderList() {
+            budgetListEl.innerHTML = '';
+            state.budget.forEach((item, index) => {
+                budgetListEl.appendChild(createItemEl(item, index));
+            });
+        }
+
+        window.updateItem = (index, key, val) => {
+            state.budget[index][key] = key === 'value' ? parseFloat(val) || 0 : val;
+            saveState();
+            calculate();
+        };
+
+        window.removeItem = (index) => {
+            state.budget.splice(index, 1);
+            saveState();
+            renderList();
+            calculate();
+        };
+
+        document.getElementById('addItem').onclick = () => {
+            state.budget.push({ name: '', value: 0 });
+            saveState();
+            renderList();
+            const lastItem = budgetListEl.lastElementChild;
+            lastItem.querySelector('input').focus();
+        };
+
+        currencyEl.onchange = (e) => {
+            state.currency = e.target.value;
+            currLabels.forEach(el => el.textContent = state.currency);
+            saveState();
+            fetchExchangeRate();
+        };
+
+        taxRateEl.onchange = (e) => {
+            state.taxRate = parseFloat(e.target.value) || 0;
+            saveState();
+            calculate();
+        };
+
+        function calculate() {
+            const total = state.budget.reduce((acc, item) => acc + (item.value || 0), 0);
+            const taxFactor = 1 - (state.taxRate / 100);
+            const grossBase = total / taxFactor;
+            const grossUSD = grossBase * exchangeRate;
+
+            totalBudgetEl.textContent = `${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${state.currency}`;
+            grossSalaryBaseEl.textContent = `${grossBase.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${state.currency}`;
+            grossSalaryUSDEl.textContent = `$ ${grossUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        // Init
+        currencyEl.value = state.currency;
+        currLabels.forEach(el => el.textContent = state.currency);
+        taxRateEl.value = state.taxRate;
+        renderList();
+        fetchExchangeRate();
+    </script>
+</body>
+</html>
