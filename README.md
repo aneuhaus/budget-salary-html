@@ -1,5 +1,7 @@
 # Bridge - Budget & Salary Calculator
 
+Bridge: The elegant way to calculate what you actually need to earn.
+
 A clean, single-page application to calculate your required gross salary based on your monthly expenses, tax rates, and real-time exchange rates.
 
 ## Features
