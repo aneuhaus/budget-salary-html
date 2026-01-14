@@ -225,6 +225,12 @@
             margin-top: 0.25rem;
         }
 
+        .result-details {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
         .exchange-info {
             font-size: 0.8rem;
             color: var(--text-muted);
@@ -310,12 +316,17 @@
                     <h2>Summary</h2>
                     <div class="results">
                         <div class="result-card">
-                            <div class="result-label">Total Monthly Expenses</div>
+                            <div class="result-label">Total Monthly Expenses (<span class="curr-label">BRL</span>)</div>
                             <div id="totalBudget" class="result-value">0.00</div>
                         </div>
                         <div class="result-card">
                             <div class="result-label">Required Gross Salary (<span class="curr-label">BRL</span>)</div>
                             <div id="grossSalaryBase" class="result-value">0.00</div>
+                            <div class="result-details">
+                                <span>Total Taxes:</span>
+                                <span id="totalTaxes">0.00</span>
+                                <span>(<span class="tax-rate-label">0</span> %)</span>
+                            </div>
                         </div>
                         <div class="result-card success">
                             <div class="result-label">Required Gross Salary (USD)</div>
@@ -373,26 +384,28 @@
         const currencyEl = document.getElementById('currency');
         const taxRateEl = document.getElementById('taxRate');
         const totalBudgetEl = document.getElementById('totalBudget');
+        const totalTaxesEl = document.getElementById('totalTaxes');
         const grossSalaryBaseEl = document.getElementById('grossSalaryBase');
         const grossSalaryUSDEl = document.getElementById('grossSalaryUSD');
         const exchangeStatusEl = document.getElementById('exchangeStatus');
         const currLabels = document.querySelectorAll('.curr-label');
+        const taxRateLabel = document.querySelector('.tax-rate-label');
 
         function saveState() {
             localStorage.setItem('budget_state', JSON.stringify(state));
         }
 
         async function fetchExchangeRate() {
+
             try {
                 exchangeStatusEl.textContent = `Fetching rate for ${state.currency}...`;
-                const res = await fetch(`https://api.exchangerate-api.com/v4/latest/${state.currency}`);
+                const res = await fetch(`https://open.er-api.com/v6/latest/${state.currency}`);
                 const data = await res.json();
                 exchangeRate = data.rates.USD;
-                const innerHtml = `
-                  <p>${data.date}</p>
-                  <p>1 ${state.currency} = ${exchangeRate.toFixed(4)} USD</p>
+                exchangeStatusEl.innerHTML = `
+                  <p>${data.time_last_update_utc.slice(5,25)}</p>
+                  <p>USD = ${(1 / exchangeRate).toFixed(4)} ${state.currency}</p>
                 `;
-                exchangeStatusEl.innerHTML = innerHtml;
                 calculate();
             } catch (err) {
                 console.error('Exchange rate fetch failed', err);
@@ -463,9 +476,12 @@
             const total = state.budget.reduce((acc, item) => acc + (item.value || 0), 0);
             const taxFactor = 1 - (state.taxRate / 100);
             const grossBase = total / taxFactor;
+            const totalTaxes = Math.abs(total - grossBase);
             const grossUSD = grossBase * exchangeRate;
+            taxRateLabel.textContent = state.taxRate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
             totalBudgetEl.textContent = `${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${state.currency}`;
+            totalTaxesEl.textContent = `${totalTaxes.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${state.currency}`;
             grossSalaryBaseEl.textContent = `${grossBase.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${state.currency}`;
             grossSalaryUSDEl.textContent = `$ ${grossUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
