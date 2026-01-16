@@ -14,13 +14,6 @@
     <meta property="og:image" content="https://budget.neuhaus.co/og-image.png">
     <meta property="og:site_name" content="Budget & Salary Calculator">
     <meta property="og:locale" content="en_US">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Budget & Salary Calculator">
-    <meta name="twitter:description" content="Calculate your required gross salary based on expenses, tax rates, and real-time exchange rates.">
-    <meta name="twitter:image" content="https://budget.neuhaus.co/og-image.png">
-    <meta name="twitter:site" content="@aneuhaus">
-    <meta name="twitter:creator" content="@aneuhaus">
-    <meta name="twitter:domain" content="budget.neuhaus.co">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -331,11 +324,11 @@
                     <h2>Summary</h2>
                     <div class="results">
                         <div class="result-card">
-                            <div class="result-label">Total Monthly Expenses (<span class="curr-label">BRL</span>)</div>
+                            <div class="result-label">Total Monthly Expenses</div>
                             <div id="totalBudget" class="result-value">0.00</div>
                         </div>
                         <div class="result-card">
-                            <div class="result-label">Required Gross Salary (<span class="curr-label">BRL</span>)</div>
+                            <div class="result-label">Required Gross Salary</div>
                             <div id="grossSalaryBase" class="result-value">0.00</div>
                             <div class="result-details">
                                 <span>Total Taxes:</span>
@@ -406,12 +399,27 @@
         const currLabels = document.querySelectorAll('.curr-label');
         const taxRateLabel = document.querySelector('.tax-rate-label');
 
+        const formatCurrency = (value, currency, digits = 2, language = navigator.language) => {
+            return new Intl.NumberFormat(language, {
+                style: 'currency',
+                currency: currency,
+                minimumFractionDigits: digits,
+                maximumFractionDigits: digits,
+            }).format(value);
+        };
+
+        const formatNumber = (value, digits = 2, language = navigator.language) => {
+            return new Intl.NumberFormat(language, {
+                minimumFractionDigits: digits,
+                maximumFractionDigits: digits,
+            }).format(value);
+        };
+
         function saveState() {
             localStorage.setItem('budget_state', JSON.stringify(state));
         }
 
         async function fetchExchangeRate() {
-
             try {
                 exchangeStatusEl.textContent = `Fetching rate for ${state.currency}...`;
                 const res = await fetch(`https://open.er-api.com/v6/latest/${state.currency}`);
@@ -419,7 +427,7 @@
                 exchangeRate = data.rates.USD;
                 exchangeStatusEl.innerHTML = `
                   <p>${data.time_last_update_utc.slice(5,25)}</p>
-                  <p>USD = ${(1 / exchangeRate).toFixed(4)} ${state.currency}</p>
+                  <p>1 USD = ${formatCurrency(1 / exchangeRate, state.currency, 4)}</p>
                 `;
                 calculate();
             } catch (err) {
@@ -491,14 +499,14 @@
             const total = state.budget.reduce((acc, item) => acc + (item.value || 0), 0);
             const taxFactor = 1 - (state.taxRate / 100);
             const grossBase = total / taxFactor;
-            const totalTaxes = Math.abs(total - grossBase);
+            const totalTaxes = Math.min(Math.abs(total - grossBase), grossBase); // Clamp just in case
             const grossUSD = grossBase * exchangeRate;
-            taxRateLabel.textContent = state.taxRate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-            totalBudgetEl.textContent = `${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${state.currency}`;
-            totalTaxesEl.textContent = `${totalTaxes.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${state.currency}`;
-            grossSalaryBaseEl.textContent = `${grossBase.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${state.currency}`;
-            grossSalaryUSDEl.textContent = `$ ${grossUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            
+            taxRateLabel.textContent = formatNumber(state.taxRate);
+            totalBudgetEl.textContent = formatCurrency(total, state.currency);
+            totalTaxesEl.textContent = formatCurrency(totalTaxes, state.currency);
+            grossSalaryBaseEl.textContent = formatCurrency(grossBase, state.currency);
+            grossSalaryUSDEl.textContent = formatCurrency(grossUSD, 'USD');
         }
 
         // Init
