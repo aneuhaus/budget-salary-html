@@ -391,6 +391,8 @@
     </template>
 
     <script>
+        const $ = (selector) => document.querySelector(selector);
+        const $$ = (selector) => document.querySelectorAll(selector);
         const DEFAULT_DATA = {
             currency: 'BRL',
             taxRate: 27.5,
@@ -413,20 +415,21 @@
                 { name: 'Desired Savings', value: 4000 }
             ]
         };
+        const API_URL = 'https://open.er-api.com/v6/latest/';
 
         let state = JSON.parse(localStorage.getItem('budget_state')) || DEFAULT_DATA;
         let exchangeRate = 0.18; // Fallback
 
-        const budgetListEl = document.getElementById('budgetList');
-        const currencyEl = document.getElementById('currency');
-        const taxRateEl = document.getElementById('taxRate');
-        const totalBudgetEl = document.getElementById('totalBudget');
-        const totalTaxesEl = document.getElementById('totalTaxes');
-        const grossSalaryBaseEl = document.getElementById('grossSalaryBase');
-        const grossSalaryUSDEl = document.getElementById('grossSalaryUSD');
-        const exchangeStatusEl = document.getElementById('exchangeStatus');
-        const currLabels = document.querySelectorAll('.curr-label');
-        const taxRateLabel = document.querySelector('.tax-rate-label');
+        const budgetListEl = $('#budgetList');
+        const currencyEl = $('#currency');
+        const taxRateEl = $('#taxRate');
+        const totalBudgetEl = $('#totalBudget');
+        const totalTaxesEl = $('#totalTaxes');
+        const grossSalaryBaseEl = $('#grossSalaryBase');
+        const grossSalaryUSDEl = $('#grossSalaryUSD');
+        const exchangeStatusEl = $('#exchangeStatus');
+        const currLabels = $$('.curr-label');
+        const taxRateLabel = $('.tax-rate-label');
 
         const formatCurrency = (value, currency, digits = 2, language = navigator.language) => {
             return new Intl.NumberFormat(language, {
@@ -451,7 +454,7 @@
         async function fetchExchangeRate() {
             try {
                 exchangeStatusEl.textContent = `Fetching rate for ${state.currency}...`;
-                const res = await fetch(`https://open.er-api.com/v6/latest/${state.currency}`);
+                const res = await fetch(`${API_URL}${state.currency}`);
                 const data = await res.json();
                 exchangeRate = data.rates.USD;
                 exchangeStatusEl.innerHTML = `
@@ -466,7 +469,7 @@
         }
 
         function createItemEl(item, index) {
-            const template = document.getElementById('expense-item-template');
+            const template = $('#expense-item-template');
             const clone = template.content.cloneNode(true);
             
             const nameInput = clone.querySelector('.expense-name');
@@ -503,7 +506,7 @@
             calculate();
         };
 
-        document.getElementById('addItem').onclick = () => {
+        $('#addItem').onclick = () => {
             state.budget.push({ name: '', value: 0 });
             saveState();
             renderList();
