@@ -18,289 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'%3e%3ctext y='32' font-size='32'%3e💵%3c/text%3e%3c/svg%3e" />
-    <style>
-        :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --bg: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.1);
-            --accent: #10b981;
-            --danger: #ef4444;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 2rem 1rem;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(to right, #6366f1, #10b981);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        p.subtitle {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border);
-            border-radius: 0.75rem;
-            color: var(--text);
-            font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-
-        .budget-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-
-        .budget-item {
-            display: grid;
-            grid-template-columns: 1fr 90px 40px;
-            gap: 0.75rem;
-            align-items: center;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .btn {
-            cursor: pointer;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            border: none;
-            font-weight: 600;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-muted);
-            padding: 0.5rem;
-        }
-
-        .btn-ghost:hover {
-            color: var(--danger);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .add-item-btn {
-            margin-top: 1.5rem;
-            width: 100%;
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-            border: 1px dashed var(--primary);
-        }
-
-        .add-item-btn:hover {
-            background: rgba(99, 102, 241, 0.2);
-        }
-
-        .results {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .result-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            border-left: 4px solid var(--primary);
-        }
-
-        .result-card.success {
-            border-left-color: var(--accent);
-        }
-
-        .result-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .result-value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-top: 0.25rem;
-        }
-
-        .result-details {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-
-        .exchange-info {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 1rem;
-            text-align: center;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
-
-        .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out }
-        @keyframes octocat-wave {
-            0%,100% { transform: rotate(0) }
-            20%,60% { transform: rotate(-25deg) }
-            40%,80% { transform: rotate(10deg) }
-        }
-        @media (max-width:500px) {
-            .github-corner:hover .octo-arm { animation: none }
-            .github-corner .octo-arm { animation: octocat-wave 560ms ease-in-out }
-        }
-        .github-corner svg {
-            fill: #151513;
-            color: #fff;
-            position: absolute;
-            top: 0;
-            border: 0;
-            right: 0;
-        }
-
-        .github-corner .octo-arm {
-            transform-origin: 130px 106px;
-        }
-
-        .config-grid {
-            grid-template-columns: 1fr 1fr;
-            margin-bottom: 2rem;
-            gap: 1rem;
-        }
-
-        .input-group-compact {
-            margin-bottom: 0;
-        }
-
-        .summary-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <a href="https://github.com/aneuhaus/budget-salary-html" class="github-corner" aria-label="View source on GitHub">
@@ -317,37 +35,7 @@
         </header>
 
         <main class="grid">
-            <!-- Left: Inputs -->
-            <div class="card">
-                <h2>Configuration</h2>
-                <div class="grid config-grid">
-                    <div class="input-group input-group-compact">
-                        <label for="currency">Base Currency</label>
-                        <select id="currency">
-                            <option value="BRL">BRL</option>
-                            <option value="EUR">EUR</option>
-                            <option value="GBP">GBP</option>
-                            <option value="ARS">ARS</option>
-                            <option value="CLP">CLP</option>
-                            <option value="MXN">MXN</option>
-                        </select>
-                    </div>
-                    <div class="input-group input-group-compact">
-                        <label for="taxRate">Tax Rate (%)</label>
-                        <input type="number" id="taxRate" step="0.1" value="27.5">
-                    </div>
-                </div>
-
-                <h2>Expenses</h2>
-                <div id="budgetList" class="budget-list">
-                    <!-- Items will be injected here -->
-                </div>
-                <button id="addItem" class="btn add-item-btn">
-                    <span>+</span> Add Expense
-                </button>
-            </div>
-
-            <!-- Right: Results -->
+            <!-- Left: Summary -->
             <div class="card summary-card">
                 <div>
                     <h2>Summary</h2>
@@ -377,12 +65,121 @@
                     <p id="lastUpdated"></p>
                 </div>
             </div>
+
+            <!-- Right: Configuration & Quick Edit -->
+            <div class="card">
+                <h2>Configuration</h2>
+                <div class="grid config-grid">
+                    <div class="input-group input-group-compact">
+                        <label for="currency">Base Currency</label>
+                        <select id="currency">
+                            <option value="BRL">BRL</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="ARS">ARS</option>
+                            <option value="CLP">CLP</option>
+                            <option value="MXN">MXN</option>
+                        </select>
+                    </div>
+                    <div class="input-group input-group-compact">
+                        <label for="taxRate">Tax Rate (%)</label>
+                        <input type="number" id="taxRate" step="0.1" value="27.5">
+                    </div>
+                </div>
+
+                <h2>Quick Edit Expenses</h2>
+                <div id="budgetList" class="budget-list">
+                    <!-- Items will be injected here -->
+                </div>
+                <button id="addItem" class="btn add-item-btn">
+                    <span>+</span> Add Expense
+                </button>
+            </div>
         </main>
+
+        <!-- Detailed Expense List -->
+        <div class="card detailed-section">
+            <h2>Detailed Expenses</h2>
+            
+            <div class="filter-controls">
+                <label for="tagFilter">Filter by Tag:</label>
+                <select id="tagFilter">
+                    <option value="all">All Categories</option>
+                    <option value="essential">Essential</option>
+                    <option value="housing">Housing</option>
+                    <option value="transport">Transport</option>
+                    <option value="health">Health</option>
+                    <option value="lifestyle">Lifestyle</option>
+                    <option value="savings">Savings</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <table class="expense-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th style="text-align: right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="detailedList">
+                    <!-- Detailed items will be injected here -->
+                </tbody>
+            </table>
+
+            <div class="filtered-total">
+                <span class="filtered-total-label" id="filteredLabel">Total (All Categories)</span>
+                <span class="filtered-total-value" id="filteredTotal">0.00</span>
+            </div>
+        </div>
     </div>
+
+    <!-- Add Expense Modal -->
+    <dialog id="addExpenseModal" closedby="any">
+        <div class="modal-header">
+            <h2>Add New Expense</h2>
+        </div>
+        <form id="addExpenseForm" class="modal-body">
+            <div class="input-group">
+                <label for="modalExpenseName">Expense Name</label>
+                <input type="text" id="modalExpenseName" required placeholder="e.g., Rent, Food, etc.">
+            </div>
+            <div class="input-group">
+                <label for="modalExpenseValue">Amount</label>
+                <input type="number" id="modalExpenseValue" step="0.01" required placeholder="0.00">
+            </div>
+            <div class="input-group">
+                <label for="modalExpenseTag">Category</label>
+                <select id="modalExpenseTag" required>
+                    <option value="essential">Essential</option>
+                    <option value="housing">Housing</option>
+                    <option value="transport">Transport</option>
+                    <option value="health">Health</option>
+                    <option value="lifestyle">Lifestyle</option>
+                    <option value="savings">Savings</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+        </form>
+        <div class="modal-footer">
+            <button type="button" id="cancelModal" class="btn btn-ghost">Cancel</button>
+            <button type="submit" form="addExpenseForm" class="btn btn-primary">Add Expense</button>
+        </div>
+    </dialog>
 
     <template id="expense-item-template">
         <div class="budget-item">
             <input type="text" class="expense-name" placeholder="Expense name">
+            <select class="expense-tag">
+                <option value="essential">Essential</option>
+                <option value="housing">Housing</option>
+                <option value="transport">Transport</option>
+                <option value="health">Health</option>
+                <option value="lifestyle">Lifestyle</option>
+                <option value="savings">Savings</option>
+                <option value="other">Other</option>
+            </select>
             <input type="number" class="expense-value" placeholder="0">
             <button class="btn btn-ghost remove-item">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
@@ -390,163 +187,6 @@
         </div>
     </template>
 
-    <script>
-        const $ = (selector) => document.querySelector(selector);
-        const $$ = (selector) => document.querySelectorAll(selector);
-        const DEFAULT_DATA = {
-            currency: 'BRL',
-            taxRate: 27.5,
-            budget: [
-                { name: 'Rent', value: 3700 },
-                { name: 'Condo', value: 1450 },
-                { name: 'Food', value: 1000 },
-                { name: 'Power', value: 120 },
-                { name: 'Internet', value: 150 },
-                { name: 'Cell Phone', value: 50 },
-                { name: 'Pharmacy', value: 300 },
-                { name: 'Health Insurance', value: 600 },
-                { name: 'Car Insurance', value: 200 },
-                { name: 'Fuel', value: 200 },
-                { name: 'Leisure', value: 800 },
-                { name: 'Subscriptions', value: 150 },
-                { name: 'Gym', value: 400 },
-                { name: 'Clothes', value: 200 },
-                { name: 'Emergency Fund', value: 500 },
-                { name: 'Desired Savings', value: 4000 }
-            ]
-        };
-        const API_URL = 'https://open.er-api.com/v6/latest/';
-
-        let state = JSON.parse(localStorage.getItem('budget_state')) || DEFAULT_DATA;
-        let exchangeRate = 0.18; // Fallback
-
-        const budgetListEl = $('#budgetList');
-        const currencyEl = $('#currency');
-        const taxRateEl = $('#taxRate');
-        const totalBudgetEl = $('#totalBudget');
-        const totalTaxesEl = $('#totalTaxes');
-        const grossSalaryBaseEl = $('#grossSalaryBase');
-        const grossSalaryUSDEl = $('#grossSalaryUSD');
-        const exchangeStatusEl = $('#exchangeStatus');
-        const currLabels = $$('.curr-label');
-        const taxRateLabel = $('.tax-rate-label');
-
-        const formatCurrency = (value, currency, digits = 2, language = navigator.language) => {
-            return new Intl.NumberFormat(language, {
-                style: 'currency',
-                currency: currency,
-                minimumFractionDigits: digits,
-                maximumFractionDigits: digits,
-            }).format(value).replace(/(\D+)/, '$1 ');
-        };
-
-        const formatNumber = (value, digits = 2, language = navigator.language) => {
-            return new Intl.NumberFormat(language, {
-                minimumFractionDigits: digits,
-                maximumFractionDigits: digits,
-            }).format(value).replace(/(\D+)/, '$1 ');
-        };
-
-        function saveState() {
-            localStorage.setItem('budget_state', JSON.stringify(state));
-        }
-
-        async function fetchExchangeRate() {
-            try {
-                exchangeStatusEl.textContent = `Fetching rate for ${state.currency}...`;
-                const res = await fetch(`${API_URL}${state.currency}`);
-                const data = await res.json();
-                exchangeRate = data.rates.USD;
-                exchangeStatusEl.innerHTML = `
-                  <p>${data.time_last_update_utc.slice(5,25)}</p>
-                  <p>1 USD = ${formatCurrency(1 / exchangeRate, state.currency, 4)}</p>
-                `;
-                calculate();
-            } catch (err) {
-                console.error('Exchange rate fetch failed', err);
-                exchangeStatusEl.textContent = 'Using fallback exchange rate (0.18)';
-            }
-        }
-
-        function createItemEl(item, index) {
-            const template = $('#expense-item-template');
-            const clone = template.content.cloneNode(true);
-            
-            const nameInput = clone.querySelector('.expense-name');
-            nameInput.value = item.name;
-            nameInput.onchange = (e) => updateItem(index, 'name', e.target.value);
-            
-            const valueInput = clone.querySelector('.expense-value');
-            valueInput.value = item.value;
-            valueInput.onchange = (e) => updateItem(index, 'value', e.target.value);
-            
-            const removeBtn = clone.querySelector('.remove-item');
-            removeBtn.onclick = () => removeItem(index);
-            
-            return clone;
-        }
-
-        function renderList() {
-            budgetListEl.innerHTML = '';
-            state.budget.forEach((item, index) => {
-                budgetListEl.appendChild(createItemEl(item, index));
-            });
-        }
-
-        window.updateItem = (index, key, val) => {
-            state.budget[index][key] = key === 'value' ? parseFloat(val) || 0 : val;
-            saveState();
-            calculate();
-        };
-
-        window.removeItem = (index) => {
-            state.budget.splice(index, 1);
-            saveState();
-            renderList();
-            calculate();
-        };
-
-        $('#addItem').onclick = () => {
-            state.budget.push({ name: '', value: 0 });
-            saveState();
-            renderList();
-            const lastItem = budgetListEl.lastElementChild;
-            lastItem.querySelector('input').focus();
-        };
-
-        currencyEl.onchange = (e) => {
-            state.currency = e.target.value;
-            currLabels.forEach(el => el.textContent = state.currency);
-            saveState();
-            fetchExchangeRate();
-        };
-
-        taxRateEl.onchange = (e) => {
-            state.taxRate = parseFloat(e.target.value) || 0;
-            saveState();
-            calculate();
-        };
-
-        function calculate() {
-            const total = state.budget.reduce((acc, item) => acc + (item.value || 0), 0);
-            const taxFactor = 1 - (state.taxRate / 100);
-            const grossBase = total / taxFactor;
-            const totalTaxes = Math.min(Math.abs(total - grossBase), grossBase); // Clamp just in case
-            const grossUSD = grossBase * exchangeRate;
-            
-            taxRateLabel.textContent = formatNumber(state.taxRate);
-            totalBudgetEl.textContent = formatCurrency(total, state.currency);
-            totalTaxesEl.textContent = formatCurrency(totalTaxes, state.currency);
-            grossSalaryBaseEl.textContent = formatCurrency(grossBase, state.currency);
-            grossSalaryUSDEl.textContent = formatCurrency(grossUSD, 'USD');
-        }
-
-        // Init
-        currencyEl.value = state.currency;
-        currLabels.forEach(el => el.textContent = state.currency);
-        taxRateEl.value = state.taxRate;
-        renderList();
-        fetchExchangeRate();
-    </script>
+    <script src="script.js" defer></script>
 </body>
 </html>
