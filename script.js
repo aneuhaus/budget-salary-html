@@ -352,10 +352,10 @@ const App = {
     );
 
     if (currentFilter === "all") {
-      this.dom.filteredLabel.textContent = "Total (All Categories)";
+      this.dom.filteredLabel.textContent = "Total";
     } else {
       const tagMeta = this.TAG_METADATA[currentFilter];
-      this.dom.filteredLabel.textContent = `Total (${tagMeta.label})`;
+      this.dom.filteredLabel.textContent = `${tagMeta.label}`;
     }
   },
 };
