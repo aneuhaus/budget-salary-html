@@ -319,6 +319,7 @@ const App = {
 
   renderDetailedList() {
     const { currentFilter, budget, currency } = this.state;
+    console.log(this.state);
     const filteredItems =
       currentFilter === "all"
         ? budget
