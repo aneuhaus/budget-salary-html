@@ -5,46 +5,47 @@
 
 const App = {
   // Constants
-  API_URL: "https://open.er-api.com/v6/latest/",
+  API_URL: 'https://open.er-api.com/v6/latest/',
   TAG_METADATA: {
-    essential: { label: "Essential", color: "tag-essential" },
-    housing: { label: "Housing", color: "tag-housing" },
-    transport: { label: "Transport", color: "tag-transport" },
-    health: { label: "Health", color: "tag-health" },
-    lifestyle: { label: "Lifestyle", color: "tag-lifestyle" },
-    savings: { label: "Savings", color: "tag-savings" },
-    other: { label: "Other", color: "tag-other" },
+    essential: { label: 'Essential', color: 'tag-essential' },
+    housing: { label: 'Housing', color: 'tag-housing' },
+    transport: { label: 'Transport', color: 'tag-transport' },
+    health: { label: 'Health', color: 'tag-health' },
+    lifestyle: { label: 'Lifestyle', color: 'tag-lifestyle' },
+    savings: { label: 'Savings', color: 'tag-savings' },
+    services: { label: 'Services', color: 'tag-services' },
+    other: { label: 'Other', color: 'tag-other' },
   },
   DEFAULT_DATA: {
-    currency: "BRL",
+    currency: 'BRL',
     taxRate: 27.5,
     budget: [
-      { name: "Rent", value: 3700, tag: "housing" },
-      { name: "Condo", value: 1450, tag: "housing" },
-      { name: "Food", value: 1000, tag: "essential" },
-      { name: "Power", value: 120, tag: "essential" },
-      { name: "Internet", value: 150, tag: "essential" },
-      { name: "Cell Phone", value: 50, tag: "essential" },
-      { name: "Pharmacy", value: 300, tag: "health" },
-      { name: "Health Insurance", value: 600, tag: "health" },
-      { name: "Car Insurance", value: 200, tag: "transport" },
-      { name: "Fuel", value: 200, tag: "transport" },
-      { name: "Leisure", value: 800, tag: "lifestyle" },
-      { name: "Subscriptions", value: 150, tag: "lifestyle" },
-      { name: "Gym", value: 400, tag: "lifestyle" },
-      { name: "Clothes", value: 200, tag: "lifestyle" },
-      { name: "Emergency Fund", value: 500, tag: "savings" },
-      { name: "Desired Savings", value: 4000, tag: "savings" },
+      { name: 'Rent', value: 3700, tag: 'housing' },
+      { name: 'Condo', value: 1450, tag: 'housing' },
+      { name: 'Food', value: 1000, tag: 'essential' },
+      { name: 'Power', value: 120, tag: 'essential' },
+      { name: 'Internet', value: 150, tag: 'essential' },
+      { name: 'Cell Phone', value: 50, tag: 'essential' },
+      { name: 'Pharmacy', value: 300, tag: 'health' },
+      { name: 'Health Insurance', value: 600, tag: 'health' },
+      { name: 'Car Insurance', value: 200, tag: 'transport' },
+      { name: 'Fuel', value: 200, tag: 'transport' },
+      { name: 'Leisure', value: 800, tag: 'lifestyle' },
+      { name: 'Subscriptions', value: 150, tag: 'lifestyle' },
+      { name: 'Gym', value: 400, tag: 'lifestyle' },
+      { name: 'Clothes', value: 200, tag: 'lifestyle' },
+      { name: 'Emergency Fund', value: 500, tag: 'savings' },
+      { name: 'Desired Savings', value: 4000, tag: 'savings' },
     ],
   },
 
   // State
   state: {
-    currency: "BRL",
+    currency: 'BRL',
     taxRate: 27.5,
     budget: [],
     exchangeRate: 0.18,
-    currentFilter: "all",
+    currentFilter: 'all',
     isLoadingRate: false,
   },
 
@@ -53,6 +54,9 @@ const App = {
 
   init() {
     this.cacheDOM();
+    this.buildTemplates();
+    console.log(this.dom.template);
+    window.app = this;
     this.loadState();
     this.bindEvents();
     this.render();
@@ -61,37 +65,37 @@ const App = {
 
   cacheDOM() {
     this.dom = {
-      budgetList: document.getElementById("budgetList"),
-      detailedList: document.getElementById("detailedList"),
-      currency: document.getElementById("currency"),
-      taxRate: document.getElementById("taxRate"),
-      totalBudget: document.getElementById("totalBudget"),
-      totalTaxes: document.getElementById("totalTaxes"),
-      grossSalaryBase: document.getElementById("grossSalaryBase"),
-      grossSalaryUSD: document.getElementById("grossSalaryUSD"),
-      exchangeStatus: document.getElementById("exchangeStatus"),
-      tagFilter: document.getElementById("tagFilter"),
-      filteredTotal: document.getElementById("filteredTotal"),
-      filteredLabel: document.getElementById("filteredLabel"),
-      addModal: document.getElementById("addExpenseModal"),
-      addForm: document.getElementById("addExpenseForm"),
-      modalName: document.getElementById("modalExpenseName"),
-      modalValue: document.getElementById("modalExpenseValue"),
-      modalTag: document.getElementById("modalExpenseTag"),
-      cancelModal: document.getElementById("cancelModal"),
-      addItemBtn: document.getElementById("addItem"),
-      template: document.getElementById("expense-item-template"),
+      budgetList: document.getElementById('budgetList'),
+      detailedList: document.getElementById('detailedList'),
+      currency: document.getElementById('currency'),
+      taxRate: document.getElementById('taxRate'),
+      totalBudget: document.getElementById('totalBudget'),
+      totalTaxes: document.getElementById('totalTaxes'),
+      grossSalaryBase: document.getElementById('grossSalaryBase'),
+      grossSalaryUSD: document.getElementById('grossSalaryUSD'),
+      exchangeStatus: document.getElementById('exchangeStatus'),
+      tagFilter: document.getElementById('tagFilter'),
+      filteredTotal: document.getElementById('filteredTotal'),
+      filteredLabel: document.getElementById('filteredLabel'),
+      addModal: document.getElementById('addExpenseModal'),
+      addForm: document.getElementById('addExpenseForm'),
+      modalName: document.getElementById('modalExpenseName'),
+      modalValue: document.getElementById('modalExpenseValue'),
+      modalTag: document.getElementById('modalExpenseTag'),
+      cancelModal: document.getElementById('cancelModal'),
+      addItemBtn: document.getElementById('addItem'),
+      template: document.getElementById('expense-item-template'),
     };
   },
 
   loadState() {
-    const saved = localStorage.getItem("budget_state");
+    const saved = localStorage.getItem('budget_state');
     const data = saved ? JSON.parse(saved) : this.DEFAULT_DATA;
     this.state.currency = data.currency;
     this.state.taxRate = data.taxRate;
     this.state.budget = data.budget.map((item) => ({
       ...item,
-      tag: item.tag || "other",
+      tag: item.tag || 'other',
     }));
 
     // Update UI to match loaded state
@@ -103,8 +107,8 @@ const App = {
   saveState() {
     const { currency, taxRate, budget } = this.state;
     localStorage.setItem(
-      "budget_state",
-      JSON.stringify({ currency, taxRate, budget }),
+      'budget_state',
+      JSON.stringify({ currency, taxRate, budget })
     );
   },
 
@@ -144,7 +148,7 @@ const App = {
   },
 
   updateLabels() {
-    document.querySelectorAll(".curr-label").forEach((el) => {
+    document.querySelectorAll('.curr-label').forEach((el) => {
       el.textContent = this.state.currency;
     });
   },
@@ -157,7 +161,7 @@ const App = {
       this.dom.exchangeStatus.innerHTML = `<span class="loading">Updating rates for ${this.state.currency}...</span>`;
 
       const res = await fetch(`${this.API_URL}${this.state.currency}`);
-      if (!res.ok) throw new Error("Network response was not ok");
+      if (!res.ok) throw new Error('Network response was not ok');
 
       const data = await res.json();
       this.state.exchangeRate = data.rates.USD;
@@ -168,7 +172,7 @@ const App = {
             `;
       this.calculate();
     } catch (err) {
-      console.error("Exchange rate fetch failed:", err);
+      console.error('Exchange rate fetch failed:', err);
       this.dom.exchangeStatus.innerHTML = `<span class="error">Rate update failed. Using fallback.</span>`;
     } finally {
       this.state.isLoadingRate = false;
@@ -181,11 +185,11 @@ const App = {
       this.formatters.set(
         key,
         new Intl.NumberFormat(navigator.language, {
-          style: "currency",
+          style: 'currency',
           currency: currency,
           minimumFractionDigits: digits,
           maximumFractionDigits: digits,
-        }),
+        })
       );
     }
     return this.formatters.get(key);
@@ -199,7 +203,7 @@ const App = {
         new Intl.NumberFormat(navigator.language, {
           minimumFractionDigits: digits,
           maximumFractionDigits: digits,
-        }),
+        })
       );
     }
     return this.formatters.get(key);
@@ -208,20 +212,20 @@ const App = {
   formatCurrency(value, currency, digits = 2) {
     return this.getFormatter(currency, digits)
       .format(value)
-      .replace(/(\D+)/, "$1 ");
+      .replace(/(\D+)/, '$1 ');
   },
 
   formatNumber(value, digits = 2) {
     return this.getNumberFormatter(digits)
       .format(value)
-      .replace(/(\D+)/, "$1 ");
+      .replace(/(\D+)/, '$1 ');
   },
 
   addExpense() {
     const newExpense = {
       name: this.dom.modalName.value,
       value: parseFloat(this.dom.modalValue.value) || 0,
-      tag: this.dom.modalTag.value || "other",
+      tag: this.dom.modalTag.value || 'other',
     };
 
     this.state.budget.push(newExpense);
@@ -234,13 +238,13 @@ const App = {
   },
 
   updateItem(index, key, val) {
-    if (key === "value") {
+    if (key === 'value') {
       this.state.budget[index][key] = parseFloat(val) || 0;
-      this.calculate();
     } else {
       this.state.budget[index][key] = val;
-      this.renderDetailedList();
     }
+    this.renderDetailedList();
+    this.calculate();
     this.saveState();
   },
 
@@ -254,7 +258,7 @@ const App = {
   calculate() {
     const total = this.state.budget.reduce(
       (acc, item) => acc + (item.value || 0),
-      0,
+      0
     );
     const taxRate = this.state.taxRate;
     const taxFactor = 1 - taxRate / 100;
@@ -265,71 +269,89 @@ const App = {
     const grossUSD = grossBase * this.state.exchangeRate;
 
     // Update DOM
-    document.querySelector(".tax-rate-label").textContent =
+    document.querySelector('.tax-rate-label').textContent =
       this.formatNumber(taxRate);
     this.dom.totalBudget.textContent = this.formatCurrency(
       total,
-      this.state.currency,
+      this.state.currency
     );
     this.dom.totalTaxes.textContent = this.formatCurrency(
       totalTaxes,
-      this.state.currency,
+      this.state.currency
     );
     this.dom.grossSalaryBase.textContent = this.formatCurrency(
       grossBase,
-      this.state.currency,
+      this.state.currency
     );
-    this.dom.grossSalaryUSD.textContent = this.formatCurrency(grossUSD, "USD");
+    this.dom.grossSalaryUSD.textContent = this.formatCurrency(grossUSD, 'USD');
   },
 
   createItemEl(item, index) {
-    const clone = this.dom.template.content.cloneNode(true);
-    const itemEl = clone.querySelector(".budget-item");
+    const clone = this.dom.template.cloneNode(true);
+    const itemEl = clone.querySelector('.budget-item');
 
-    const nameInput = itemEl.querySelector(".expense-name");
+    const nameInput = itemEl.querySelector('.expense-name');
     nameInput.value = item.name;
-    nameInput.onchange = (e) => this.updateItem(index, "name", e.target.value);
+    nameInput.onchange = (e) => this.updateItem(index, 'name', e.target.value);
 
-    const tagSelect = itemEl.querySelector(".expense-tag");
+    const tagSelect = itemEl.querySelector('.expense-tag');
     tagSelect.value = item.tag;
-    tagSelect.onchange = (e) => this.updateItem(index, "tag", e.target.value);
+    tagSelect.onchange = (e) => this.updateItem(index, 'tag', e.target.value);
 
-    const valueInput = itemEl.querySelector(".expense-value");
+    const valueInput = itemEl.querySelector('.expense-value');
     valueInput.value = item.value;
     valueInput.onchange = (e) =>
-      this.updateItem(index, "value", e.target.value);
+      this.updateItem(index, 'value', e.target.value);
 
-    const removeBtn = itemEl.querySelector(".remove-item");
+    const removeBtn = itemEl.querySelector('.remove-item');
     removeBtn.onclick = () => this.removeItem(index);
 
-    return clone;
+    itemEl.removeAttribute('style');
+    return itemEl;
+  },
+
+  buildTemplates() {
+    const { modalTag, tagFilter, template } = this.dom;
+    const expenseTag = template.querySelector('.expense-tag');
+    tagFilter.innerHTML = '';
+    tagFilter.add(new Option('All', 'all'));
+    Object.keys(this.TAG_METADATA).forEach((tag) => {
+      const tagMeta = this.TAG_METADATA[tag] || this.TAG_METADATA.other;
+      const option = document.createElement('option');
+      option.value = tag;
+      option.textContent = tagMeta.label;
+      expenseTag.add(option);
+      modalTag.appendChild(option);
+      tagFilter.appendChild(option);
+    });
   },
 
   render() {
-    this.dom.budgetList.innerHTML = "";
+    this.dom.budgetList.innerHTML = '';
     const fragment = document.createDocumentFragment();
 
     this.state.budget.forEach((item, index) => {
-      fragment.appendChild(this.createItemEl(item, index));
+      const el = this.createItemEl(item, index);
+      fragment.appendChild(el);
     });
 
     this.dom.budgetList.appendChild(fragment);
+
     this.renderDetailedList();
   },
 
   renderDetailedList() {
-    const { currentFilter, budget, currency } = this.state;
-    console.log(this.state);
+    const { currentFilter, budget, currency } = { ...this.state };
     const filteredItems =
-      currentFilter === "all"
+      currentFilter === 'all'
         ? budget
         : budget.filter((item) => item.tag === currentFilter);
 
-    this.dom.detailedList.innerHTML = "";
+    this.dom.detailedList.innerHTML = '';
     const fragment = document.createDocumentFragment();
 
     filteredItems.forEach((item) => {
-      const row = document.createElement("tr");
+      const row = document.createElement('tr');
       const tagMeta = this.TAG_METADATA[item.tag] || this.TAG_METADATA.other;
 
       row.innerHTML = `
@@ -345,15 +367,15 @@ const App = {
     // Update filtered total
     const filteredTotalValue = filteredItems.reduce(
       (acc, item) => acc + (item.value || 0),
-      0,
+      0
     );
     this.dom.filteredTotal.textContent = this.formatCurrency(
       filteredTotalValue,
-      currency,
+      currency
     );
 
-    if (currentFilter === "all") {
-      this.dom.filteredLabel.textContent = "Total";
+    if (currentFilter === 'all') {
+      this.dom.filteredLabel.textContent = 'Total';
     } else {
       const tagMeta = this.TAG_METADATA[currentFilter];
       this.dom.filteredLabel.textContent = `${tagMeta.label}`;
@@ -362,4 +384,4 @@ const App = {
 };
 
 // Start the application
-document.addEventListener("DOMContentLoaded", () => App.init());
+document.addEventListener('DOMContentLoaded', () => App.init());
